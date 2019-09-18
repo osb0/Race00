@@ -7,10 +7,12 @@ class playGame extends Phaser.Scene{
 		//Variables
 		this.running = false;
 		this.gameOver = false;
-		this.speed = 1;
+		this.speed = 0.8;
+		this.visualSpeed = 60;
 		this.moveable = true;
 		this.score = 0;
 		this.bestScore = localStorage.getItem(gameOptions.savedData);
+		this.fuel = 100;
 
 		//Add Background
 		var backgorund = this.add.image(0,0,"background").setOrigin(0,0);
@@ -73,6 +75,10 @@ class playGame extends Phaser.Scene{
 		}
 		this.bestScoreText.depth = 1000;
 
+		//Create speed text
+		this.speedText = this.add.bitmapText(280,82,"font","60");
+		this.speedText.depth = 1000;
+
 		//Environments
 		this.roads = this.createRoad();
 		this.roadLength = this.roads.length;
@@ -92,6 +98,21 @@ class playGame extends Phaser.Scene{
 		this.input.keyboard.on("keydown", this.handleKey, this);
 		this.input.on("pointerdown", this.handleTouch, this);
 		this.input.on("pointerdownoutside", this.handleTouch, this);
+
+		//Speed Event
+		this.speedTimer = this.time.addEvent({
+			delay:1000*10,
+			callback: this.speedUp,
+			callbackScope: this,
+			loop: true,
+		});
+		this.speedTimer.paused = true;
+	}
+
+	speedUp(e){
+		this.speed += 0.2;
+		this.visualSpeed += 5;
+		this.speedText.text = this.visualSpeed.toString();
 	}
 
 	handleTouch(e){
@@ -104,6 +125,7 @@ class playGame extends Phaser.Scene{
 				this.startText.alpha = 0;
 				this.gameOverText.alpha = 0;
 				this.running = true;
+				this.speedTimer.paused = false;
 			}
 		} else {
 			var touchX = e.downX;
@@ -310,6 +332,7 @@ class playGame extends Phaser.Scene{
 			var boundB = this.enemies[i].getBounds();
 			if(Phaser.Geom.Rectangle.Intersection(boundA, boundB).width){
 				this.running = false;
+				this.speedTimer.paused = true;
 				this.gameOver = true;
 				this.gameOverAnim.play();
 				if(this.bestScore != null){
