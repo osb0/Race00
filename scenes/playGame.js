@@ -107,6 +107,9 @@ class playGame extends Phaser.Scene{
 			loop: true,
 		});
 		this.speedTimer.paused = true;
+
+		//Fuel event
+
 	}
 
 	speedUp(e){
@@ -300,13 +303,13 @@ class playGame extends Phaser.Scene{
 					speed = this.speed*1.5;
 					break;
 				case 112:
-					speed = this.speed*1.5;
+					speed = this.speed*1.7;
 					break;
 				case 146:
 					speed = this.speed/1.5;
 					break;
 				case 180:
-					speed = this.speed/1.5;
+					speed = this.speed/1.3;
 					break;
 				
 			}
