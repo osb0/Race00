@@ -10,7 +10,7 @@ class playGame extends Phaser.Scene{
 		this.speed = 1;
 		this.moveable = true;
 		this.score = 0;
-		
+		this.bestScore = localStorage.getItem(gameOptions.savedData);
 
 		//Add Background
 		var backgorund = this.add.image(0,0,"background").setOrigin(0,0);
@@ -58,6 +58,20 @@ class playGame extends Phaser.Scene{
 			repeat: -1,
 			yoyo: true
 		}).stop();
+
+		//Create score text
+		this.scoreText = this.add.bitmapText(265, 22, "font", this.score.toString());
+		this.scoreText.depth = 1000;
+
+		//Create best score
+		this.bestScoreTitle = this.add.bitmapText(265, 105, "font", "BEST SCORE");
+		this.bestScoreTitle.depth = 1000;
+		if(this.bestScore!=null){
+			this.bestScoreText = this.add.bitmapText(265, 115, "font", this.bestScore.toString());
+		} else {
+			this.bestScoreText = this.add.bitmapText(265, 115, "font", "0");
+		}
+		this.bestScoreText.depth = 1000;
 
 		//Environments
 		this.roads = this.createRoad();
@@ -283,6 +297,9 @@ class playGame extends Phaser.Scene{
 				curEnemy.x = enemyLocation[0];
 				curEnemy.y = enemyLocation[1];
 				curEnemy.setTexture(enemyLocation[2]);
+
+				this.score += 10;
+				this.scoreText.text = this.score.toString();
 			}
 		}
 	}
@@ -295,6 +312,14 @@ class playGame extends Phaser.Scene{
 				this.running = false;
 				this.gameOver = true;
 				this.gameOverAnim.play();
+				if(this.bestScore != null){
+					var bigger = Math.max(this.bestScore, this.score);
+					this.bestScore = bigger;
+					this.bestScoreText.text = bigger.toString();
+					localStorage.setItem(gameOptions.savedData, bigger);
+				} else {
+					localStorage.setItem(gameOptions.savedData, this.score);
+				}
 			}
 		}
 	}
