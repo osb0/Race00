@@ -12,7 +12,7 @@ class playGame extends Phaser.Scene{
 		this.moveable = true;
 		this.score = 0;
 		this.bestScore = localStorage.getItem(gameOptions.savedData);
-		this.fuel = 100;
+		this.fuel = 55;
 
 		//Add Background
 		var backgorund = this.add.image(0,0,"background").setOrigin(0,0);
@@ -91,7 +91,7 @@ class playGame extends Phaser.Scene{
 
 		//Enemies
 		this.enemies = [];
-		this.lastLocation = 0;
+		this.lastLocation = 2;
 		this.createEnemies();
 
 		//User Inputs
@@ -109,7 +109,60 @@ class playGame extends Phaser.Scene{
 		this.speedTimer.paused = true;
 
 		//Fuel event
+		this.fuelShape = this.add.rectangle(260,50.5, 55, 8, 0x8a5f29).setOrigin(0,0);
+		this.fuelShape.depth = 1000;
+		this.fuelTimer = this.time.addEvent({
+			delay:500,
+			callback: this.fuelConsumption,
+			callbackScope: this,
+			loop: true,
+		});
+		this.fuelTimer.paused = true;
 
+		this.fuelItem = this.add.sprite(146, -200, "fuel").setScale(0.6);
+		this.canFuelRelocate = false;
+
+		this.fuelAddTimer = this.time.addEvent({
+			delay:1000*5,
+			callback: this.addFuel,
+			callbackScope: this,
+			loop: true,
+		});
+		this.fuelAddTimer.paused = true;
+	}
+
+	addFuel(e){
+		if(this.canFuelRelocate){
+			var decide = Math.floor(Math.random() * 4);
+			var locationX;
+			var locationY = (Math.random() * 200)-220;
+
+			switch(decide){
+				case 0:
+					locationX = 112;
+					break;
+				case 1:
+					locationX = 146;
+					break;
+				case 2:
+					locationX = 180;
+					break;
+				case 3:
+					locationX = 78;
+					break;
+			}
+
+			this.fuelItem.x = locationX;
+			this.fuelItem.y = locationY;
+			this.canFuelRelocate = false;
+		}
+	}
+
+	fuelConsumption(e){
+		if(this.fuel>0){
+			this.fuel -= this.speed*1.2;
+			this.fuelShape.width = this.fuel;
+		}
 	}
 
 	speedUp(e){
@@ -129,6 +182,8 @@ class playGame extends Phaser.Scene{
 				this.gameOverText.alpha = 0;
 				this.running = true;
 				this.speedTimer.paused = false;
+				this.fuelTimer.paused = false;
+				this.fuelAddTimer.paused = false;
 			}
 		} else {
 			var touchX = e.downX;
@@ -275,17 +330,17 @@ class playGame extends Phaser.Scene{
 				break;
 		}
 
-		locationY = (Math.random()*200) - 220;
+		locationY = (Math.random()*400) - 420;
 
 		while(this.checkEnemyOverlap(locationX, locationY, this.enemies)){
-			locationY = (Math.random() * 200) - 220;
+			locationY = (Math.random() * 400) - 420;
 		}
 
 		return [locationX, locationY, skin];
 	}
 
 	createEnemies(){
-		for(var i=0; i<8; i++){
+		for(var i=0; i<5; i++){
 			var enemyInfo = this.locateEnemy();
 			this.enemies.push(this.add.sprite(enemyInfo[0], enemyInfo[1], enemyInfo[2]).setOrigin(0.5, 0));
 		}
@@ -334,19 +389,50 @@ class playGame extends Phaser.Scene{
 			var boundA = this.player.getBounds();
 			var boundB = this.enemies[i].getBounds();
 			if(Phaser.Geom.Rectangle.Intersection(boundA, boundB).width){
-				this.running = false;
-				this.speedTimer.paused = true;
-				this.gameOver = true;
-				this.gameOverAnim.play();
-				if(this.bestScore != null){
-					var bigger = Math.max(this.bestScore, this.score);
-					this.bestScore = bigger;
-					this.bestScoreText.text = bigger.toString();
-					localStorage.setItem(gameOptions.savedData, bigger);
-				} else {
-					localStorage.setItem(gameOptions.savedData, this.score);
-				}
+				this.endGame();
 			}
+		}
+	}
+
+	checkFuel(){
+		if(this.fuel <= 0){
+			this.endGame();
+		}
+	}
+
+	moveFuel(){
+		if(this.fuelItem.y < 200){
+			this.fuelItem.y += this.speed;
+			var boundA = this.player.getBounds();
+			var boundB = this.fuelItem.getBounds();
+			if(Phaser.Geom.Rectangle.Intersection(boundA, boundB).width){
+				this.fillFuel();
+			}
+		} else {
+			this.canFuelRelocate = true;
+		}
+	}
+
+	fillFuel(){
+		this.fuel = 55;
+		this.fuelShape.width = this.fuel;
+		this.fuelItem.y = 210;
+	}
+
+	endGame(){
+		this.running = false;
+		this.speedTimer.paused = true;
+		this.fuelTimer.paused = true;
+		this.fuelAddTimer.paused = true;
+		this.gameOver = true;
+		this.gameOverAnim.play();
+		if(this.bestScore != null){
+			var bigger = Math.max(this.bestScore, this.score);
+			this.bestScore = bigger;
+			this.bestScoreText.text = bigger.toString();
+			localStorage.setItem(gameOptions.savedData, bigger);
+		} else {
+			localStorage.setItem(gameOptions.savedData, this.score);
 		}
 	}
 
@@ -356,6 +442,8 @@ class playGame extends Phaser.Scene{
 			this.moveTree();
 			this.moveEnemies();
 			this.checkCollision();
+			this.moveFuel();
+			this.checkFuel();
 		}
 	}
 }
