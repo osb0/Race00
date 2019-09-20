@@ -14,6 +14,12 @@ class bootGame extends Phaser.Scene{
 		this.load.image("panel", "assets/sprites/ui.png");
 
 		this.load.image("font", "assets/sprites/ui-font.png");
+
+		this.load.audio("music", "assets/sounds/leap.WAV");
+		this.load.audio("carstart", "assets/sounds/carstart.wav");
+		this.load.audio("fuel", "assets/sounds/fuel.wav");
+		this.load.audio("fuelend", "assets/sounds/fuelend.wav");
+		this.load.audio("end", "assets/sounds/end.wav");
 	}
 
 	create(){

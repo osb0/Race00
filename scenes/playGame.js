@@ -16,6 +16,36 @@ class playGame extends Phaser.Scene{
 
 		//Add Background
 		var backgorund = this.add.image(0,0,"background").setOrigin(0,0);
+		this.music = this.sound.add("music", {
+			mute: false,
+			volume: 0.5,
+			loop: true,
+		});
+		this.music.play();
+
+		this.carstart = this.sound.add("carstart", {
+			mute: false,
+			volume: 0.2,
+			loop: false,
+		});
+
+		this.fuelSound = this.sound.add("fuel", {
+			mute: false,
+			volume: 0.2,
+			loop: false,
+		});
+
+		this.fuelendSound = this.sound.add("fuelend", {
+			mute: false,
+			volume: 1,
+			loop: false,
+		});
+
+		this.endSound = this.sound.add("end", {
+			mute: false,
+			volume: 1,
+			loop: false,
+		});
 
 		//Add panel for UI elements
 		var panel = this.add.image(0,0,"panel").setOrigin(0,0);
@@ -184,6 +214,7 @@ class playGame extends Phaser.Scene{
 				this.speedTimer.paused = false;
 				this.fuelTimer.paused = false;
 				this.fuelAddTimer.paused = false;
+				this.carstart.play();
 			}
 		} else {
 			var touchX = e.downX;
@@ -397,6 +428,7 @@ class playGame extends Phaser.Scene{
 	checkFuel(){
 		if(this.fuel <= 0){
 			this.endGame();
+			this.fuelendSound.play();
 		}
 	}
 
@@ -417,6 +449,7 @@ class playGame extends Phaser.Scene{
 		this.fuel = 55;
 		this.fuelShape.width = this.fuel;
 		this.fuelItem.y = 210;
+		this.fuelSound.play();
 	}
 
 	endGame(){
@@ -426,6 +459,8 @@ class playGame extends Phaser.Scene{
 		this.fuelAddTimer.paused = true;
 		this.gameOver = true;
 		this.gameOverAnim.play();
+		this.endSound.play();
+		this.music.stop();
 		if(this.bestScore != null){
 			var bigger = Math.max(this.bestScore, this.score);
 			this.bestScore = bigger;
