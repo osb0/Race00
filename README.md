@@ -1,5 +1,5 @@
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![Discord][discord-shield]][discord-url]
 
 <br />
 <p align="center">
@@ -9,7 +9,9 @@
 
   <h3 align="center">Race00</h3>
   
-  [![Product Name Screen Shot][product-screenshot]](https://example.com)
+  <p align="center">
+  <img src="https://retif-yayin.github.io/Race00/assets/screenshot.png" width="400">
+  </p>
 
   <p align="center">
     Top-down look old style racing game. This is just for example purpose and you can use it anyway you want!
@@ -32,10 +34,7 @@
 To run these games on your local you need local web server on your computer. If you double-click to index.html it will probably open with errors.
 
 ## Resources
-
-* []()
-* []()
-* []()
+Graphics: https://opengameart.org/content/c64-style-racing-game
 
 
 
@@ -44,6 +43,6 @@ To run these games on your local you need local web server on your computer. If 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
+[license-url]: https://choosealicense.com/licenses/mit/
+[discord-shield]: https://img.shields.io/discord/615261354365812747?label=discord&style=flat-square
+[discord-url]: https://discord.gg/tmDhg32
